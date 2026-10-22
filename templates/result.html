@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}{{ report.hostname }} · Scan result{% endblock %}
+
+{% block content %}
+<section class="result">
+  <div class="verdict level-{{ report.level }}">
+    <span class="badge">{{ report.level | capitalize }} risk</span>
+    <h1>{{ report.score }}<small>/100</small></h1>
+    <div class="meter" aria-hidden="true">
+      <div class="meter-fill" style="width: {{ report.score }}%"></div>
+    </div>
+    <p class="recommendation">{{ report.recommendation }}</p>
+  </div>
+
+  <dl class="meta">
+    <dt>URL</dt>
+    <dd class="break">{{ report.url }}</dd>
+    <dt>Host</dt>
+    <dd>{{ report.hostname }}</dd>
+    <dt>Scanned</dt>
+    <dd>{{ report.scanned_at }}</dd>
+  </dl>
+
+  <h2>Reputation check</h2>
+  {% set rep = report.reputation %}
+  {% if rep.flagged %}
+    <div class="alert alert-error">
+      Flagged by {{ rep.sources | join(", ") }}
+      {% if rep.threats %}({{ rep.threats | join(", ") }}){% endif %}.
+    </div>
+  {% elif rep.checked %}
+    <div class="alert alert-ok">Not found on any checked blocklist.</div>
+  {% else %}
+    <div class="alert alert-warn">No reputation source could be checked.</div>
+  {% endif %}
+  {% if rep.error %}
+    <p class="hint">{{ rep.error }}</p>
+  {% endif %}
+
+  <h2>Findings ({{ report.findings | length }})</h2>
+  {% if report.findings %}
+    <ul class="findings">
+      {% for f in report.findings %}
+        <li class="finding sev-{{ f.severity }}">
+          <div class="finding-head">
+            <strong>{{ f.title }}</strong>
+            <span class="pill">{{ f.severity }} · +{{ f.score }}</span>
+          </div>
+          <p>{{ f.detail }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No suspicious patterns were detected in this URL.</p>
+  {% endif %}
+
+  <div class="actions">
+    <a class="button" href="{{ url_for('index') }}">Scan another URL</a>
+    <a class="button button-secondary" href="{{ url_for('history_page') }}">View history</a>
+  </div>
+</section>
+{% endblock %}

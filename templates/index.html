@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Scan a URL · URL Threat Detector{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <h1>Is this link safe?</h1>
+  <p>Paste a URL below and we will check it for phishing and malware warning signs.</p>
+
+  {% if error %}
+    <div class="alert alert-error" role="alert">{{ error }}</div>
+  {% endif %}
+
+  <form id="scan-form" method="post" action="{{ url_for('scan') }}" class="scan-form">
+    <label for="url" class="sr-only">URL to scan</label>
+    <input type="text" id="url" name="url" value="{{ url }}"
+           placeholder="https://example.com/login" maxlength="2048"
+           autocomplete="off" autofocus required>
+    <button type="submit" id="scan-btn">Scan URL</button>
+  </form>
+
+  <p class="hint">Only http:// and https:// links are supported. Internal addresses such as localhost are rejected.</p>
+</section>
+{% endblock %}
