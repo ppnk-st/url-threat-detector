@@ -32,28 +32,7 @@ SAFE_BROWSING_API_KEY=your-api-key
 
 Keep `.env` private; it is ignored by Git. Without the Google key, local rules and the blocklist still run.
 
-## Deploy
 
-This Flask app needs a Python web host; GitHub Pages only serves static sites. For Render, create a **Web Service** connected to this repository and use:
-
-- **Build command:** `pip install -r requirements.txt`
-- **Start command:** `gunicorn app:app --bind 0.0.0.0:$PORT`
-
-Set `SAFE_BROWSING_API_KEY` and `SECRET_KEY` in the host’s environment-variable settings. Never commit secrets to GitHub. The app uses SQLite for history, so data may not persist on hosts with an ephemeral filesystem.
-
-## API
-
-`POST /api/scan` accepts JSON and returns a scan report:
-
-```json
-{"url": "https://example.com/login"}
-```
-
-## Tests
-
-```bash
-python -m pytest -q
-```
 
 ## Limitations
 
